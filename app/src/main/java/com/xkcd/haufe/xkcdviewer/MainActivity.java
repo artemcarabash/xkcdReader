@@ -1,17 +1,13 @@
 package com.xkcd.haufe.xkcdviewer;
 
-
 import android.app.AlertDialog;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.Random;
 
@@ -25,26 +21,26 @@ import utils.Common;
 
 public class MainActivity extends AppCompatActivity {
 
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
-    IXkcdAPI iXkcdAPI;
-    private ViewPager mPager;
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private IXkcdAPI iXkcdAPI;
+    private ViewPager2 mPager;
     private ScreenSlidePagerAdapter mPagerAdapter;
     private int newestComicNumber = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_pager);
+        setContentView(R.layout.activity_main);
 
         iXkcdAPI = Common.getAPI();
-
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), newestComicNumber);
-        mPager = findViewById(R.id.pager);
-        mPager.setAdapter(mPagerAdapter);
-        mPager.setOffscreenPageLimit(2);
-        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
-
         fetchComic();
+
+        mPagerAdapter = new ScreenSlidePagerAdapter(this, newestComicNumber);
+        mPager = findViewById(R.id.pager);
+        mPager.setOffscreenPageLimit(1);
+        mPager.setAdapter(mPagerAdapter);
+        mPager.setPageTransformer(new ZoomOutPageTransformer());
+
     }
 
     @Override
@@ -64,12 +60,13 @@ public class MainActivity extends AppCompatActivity {
             Random random = new Random();
             mPager.setCurrentItem(random.nextInt(newestComicNumber + 1));
             return true;
+        } else if (id == R.id.current) {
+            mPager.setCurrentItem(newestComicNumber);
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void fetchComic() {
-
         final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setMessage("Please Wait...").setCancelable(false).show();
 
         compositeDisposable.add(iXkcdAPI.getLatestComic()
@@ -77,11 +74,10 @@ public class MainActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Comic>() {
                                @Override
-                               public void accept(Comic comics) throws Exception {
-                                   Toast.makeText(MainActivity.this, comics.getImageUrl(), Toast.LENGTH_LONG).show();
-                                   newestComicNumber = comics.getNumber();
+                               public void accept(Comic comic) throws Exception {
+                                   newestComicNumber = comic.getNumber();
                                    mPagerAdapter.updateMaxComicNumber(newestComicNumber);
-                                   mPager.setCurrentItem(mPagerAdapter.getCount());
+                                   mPager.setCurrentItem(mPagerAdapter.getItemCount());
                                    dialog.dismiss();
                                }
                            }
@@ -94,39 +90,4 @@ public class MainActivity extends AppCompatActivity {
                         }));
     }
 
-
-    public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        protected int mMaxComicNumber;
-
-        public ScreenSlidePagerAdapter(FragmentManager fm, int mMaxComicNumber) {
-            super(fm);
-            this.mMaxComicNumber = mMaxComicNumber;
-        }
-
-
-        @Override
-        public Fragment getItem(int position) {
-            // Arrays are 0 based, but the comic is 1 based, so always add 1.
-            position++;
-
-            ScreenSlidePageFragment screenSlidePageFragment = new ScreenSlidePageFragment();
-            screenSlidePageFragment.comicNumber = position;
-            return screenSlidePageFragment;
-        }
-
-
-        @Override
-        public int getCount() {
-            if (mMaxComicNumber <= 0) {
-                return 1;
-            }
-            return mMaxComicNumber;
-        }
-
-        public void updateMaxComicNumber(int mMaxComicNumber) {
-            Log.d("Adapter", "Got New Max Comic Number Updating Adapter " + mMaxComicNumber);
-            this.mMaxComicNumber = mMaxComicNumber;
-            notifyDataSetChanged();
-        }
-    }
 }

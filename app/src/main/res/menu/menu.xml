@@ -7,4 +7,9 @@
           app:showAsAction="always"
           android:icon="@mipmap/rand_icon"
           android:title="Random"/>
+    <item android:id="@+id/current"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_baseline_today_24"
+        android:title="Current"/>
 </menu>
