@@ -4,7 +4,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.example.jacob.xkcdviewer"
+        applicationId "com.xkcd.haufe.xkcdviewer"
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
@@ -20,7 +20,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+//    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'androidx.viewpager:viewpager:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'org.jsoup:jsoup:1.8.3'
