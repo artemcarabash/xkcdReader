@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -17,6 +18,7 @@
             android:layout_gravity="center_horizontal"
             android:textSize="22sp"
             android:textStyle="bold" />
+
         <TextView
             android:id="@+id/comicNumTv"
             android:layout_width="wrap_content"
@@ -24,6 +26,7 @@
             android:layout_gravity="center_horizontal"
             android:textSize="15sp"
             android:textStyle="bold" />
+
         <TextView
             android:id="@+id/dateTV"
             android:layout_width="wrap_content"
@@ -43,20 +46,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp">
-        <Button
-            android:layout_gravity="center"
-            android:text="Play"
+        android:orientation="horizontal"
+        android:paddingTop="15dp">
+
+        <ImageButton
+            android:background="#00000000"
             android:id="@+id/playTextBtn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/play_btn_selector" />
 
-        <TextView
+        <com.like.LikeButton
+            android:id="@+id/like_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/footerTv" />
+            android:layout_gravity="center"
+            app:icon_size="25dp"
+            app:like_drawable="@drawable/ic_favorite"
+            app:unlike_drawable="@drawable/ic_unfavorite" />
+
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingBottom="15dp"
+        android:text="@string/footerTv" />
 
 </LinearLayout>

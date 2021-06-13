@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,24 +38,11 @@ public class ScreenSlidePageFragment extends Fragment implements TextToSpeech.On
     private String altText, transcript;
     int comicNumber;
     private TextView titleTv, comicNumTv, dateTv;
-    private Button playTextBtn;
+    private ImageButton playTextBtn;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private IXkcdAPI iXkcdAPI;
     private PhotoView mComicImage;
     private TextToSpeech tts;
-    private Activity mActivity;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mActivity = requireActivity();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mActivity = null;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
