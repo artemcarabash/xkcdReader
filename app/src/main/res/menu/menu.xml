@@ -5,11 +5,11 @@
     <item android:id="@+id/random"
           android:orderInCategory="100"
           app:showAsAction="always"
-          android:icon="@mipmap/rand_icon"
-          android:title="Random"/>
+          android:icon="@drawable/ic_random"
+          android:title="@string/random"/>
     <item android:id="@+id/current"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:icon="@drawable/ic_baseline_today_24"
-        android:title="Current"/>
+        android:icon="@drawable/ic_current_comic"
+        android:title="@string/current"/>
 </menu>

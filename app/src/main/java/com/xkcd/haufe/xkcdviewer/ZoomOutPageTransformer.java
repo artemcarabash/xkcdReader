@@ -1,13 +1,11 @@
 package com.xkcd.haufe.xkcdviewer;
 
-import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.view.View;
+
+import androidx.viewpager2.widget.ViewPager2;
 
 /**
  * Handles the transition of the ViewPager
- * SOURCE: http://developer.android.com/training/animation/screen-slide.html
  */
 public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
     private static final float MIN_SCALE = 0.85f;

@@ -1,6 +1,8 @@
 package com.xkcd.haufe.xkcdviewer;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.chrisbanes.photoview.PhotoView;
@@ -36,10 +39,23 @@ public class ScreenSlidePageFragment extends Fragment implements TextToSpeech.On
     int comicNumber;
     private TextView titleTv, comicNumTv, dateTv;
     private Button playTextBtn;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private IXkcdAPI iXkcdAPI;
     private PhotoView mComicImage;
     private TextToSpeech tts;
+    private Activity mActivity;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mActivity = requireActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mActivity = null;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,6 +84,9 @@ public class ScreenSlidePageFragment extends Fragment implements TextToSpeech.On
             }
         });
 
+        tts = new TextToSpeech(requireActivity().getApplicationContext(), this);
+        iXkcdAPI = Common.getAPI();
+        fetchComic(comicNumber);
         Log.d("Comic Number", String.valueOf(comicNumber));
 
         return rootView;
@@ -76,10 +95,6 @@ public class ScreenSlidePageFragment extends Fragment implements TextToSpeech.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tts = new TextToSpeech(requireActivity().getApplicationContext(), this);
-        iXkcdAPI = Common.getAPI();
-        fetchComic(comicNumber);
-        Log.d("Comic Number", String.valueOf(comicNumber));
     }
 
     private void fetchComic(int comicNumber) {

@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">ComicViewer</string>
+    <string name="app_name">XKCDComicViewer</string>
     <string name="prevButton">Prev</string>
     <string name="nextButton">Next</string>
     <string name="comicContentDescription">xkcd Comic Image</string>
     <string name="randomBt">Random</string>
-    <string name="shakeTv">Shake the device for a random comic</string>
-    <string name="footerTv">Swipe to the left for the previous comic. Long press for alt text</string>
+    <string name="footerTv">Swipe left/right. Long press for alt text</string>
+    <string name="random">Random</string>
+    <string name="current">Current</string>
 </resources>
