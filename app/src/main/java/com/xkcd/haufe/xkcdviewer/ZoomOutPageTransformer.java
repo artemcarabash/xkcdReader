@@ -1,15 +1,13 @@
 package com.xkcd.haufe.xkcdviewer;
 
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.view.View;
 
 /**
  * Handles the transition of the ViewPager
  * SOURCE: http://developer.android.com/training/animation/screen-slide.html
  */
-public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
+public class ZoomOutPageTransformer implements ViewPager.PageTransformer {
     private static final float MIN_SCALE = 0.85f;
     private static final float MIN_ALPHA = 0.5f;
 
@@ -19,7 +17,7 @@ public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
 
         if (position < -1) { // [-Infinity,-1)
             // This page is way off-screen to the left.
-            view.setAlpha(0f);
+            view.setAlpha(0);
 
         } else if (position <= 1) { // [-1,1]
             // Modify the default slide transition to shrink the page as well
@@ -43,7 +41,7 @@ public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
 
         } else { // (1,+Infinity]
             // This page is way off-screen to the right.
-            view.setAlpha(0f);
+            view.setAlpha(0);
         }
     }
 }

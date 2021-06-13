@@ -3,17 +3,11 @@ package com.xkcd.haufe.xkcdviewer;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,11 +23,11 @@ import model.Comic;
 import retrofit.IXkcdAPI;
 import utils.Common;
 
-public class MainActivity extends FragmentActivity  {
+public class MainActivity extends AppCompatActivity {
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IXkcdAPI iXkcdAPI;
-    private ViewPager2 mPager;
+    private ViewPager mPager;
     private ScreenSlidePagerAdapter mPagerAdapter;
     private int newestComicNumber = 0;
 
@@ -44,11 +38,11 @@ public class MainActivity extends FragmentActivity  {
 
         iXkcdAPI = Common.getAPI();
 
-        mPagerAdapter = new ScreenSlidePagerAdapter(this, newestComicNumber);
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), newestComicNumber);
         mPager = findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
         mPager.setOffscreenPageLimit(2);
-        mPager.setPageTransformer(new ZoomOutPageTransformer());
+        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
         fetchComic();
     }
@@ -87,7 +81,7 @@ public class MainActivity extends FragmentActivity  {
                                    Toast.makeText(MainActivity.this, comics.getImageUrl(), Toast.LENGTH_LONG).show();
                                    newestComicNumber = comics.getNumber();
                                    mPagerAdapter.updateMaxComicNumber(newestComicNumber);
-                                   mPager.setCurrentItem(mPagerAdapter.getItemCount());
+                                   mPager.setCurrentItem(mPagerAdapter.getCount());
                                    dialog.dismiss();
                                }
                            }
@@ -101,43 +95,17 @@ public class MainActivity extends FragmentActivity  {
     }
 
 
-    public class ScreenSlidePagerAdapter extends FragmentStateAdapter {
+    public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         protected int mMaxComicNumber;
 
-        public ScreenSlidePagerAdapter(FragmentActivity fragmentActivity, int mMaxComicNumber) {
-            super(fragmentActivity);
+        public ScreenSlidePagerAdapter(FragmentManager fm, int mMaxComicNumber) {
+            super(fm);
             this.mMaxComicNumber = mMaxComicNumber;
         }
 
 
-//        @Override
-//        public Fragment getItem(int position) {
-//            // Arrays are 0 based, but the comic is 1 based, so always add 1.
-//            position++;
-//
-//            ScreenSlidePageFragment screenSlidePageFragment = new ScreenSlidePageFragment();
-//            screenSlidePageFragment.comicNumber = position;
-//            return screenSlidePageFragment;
-//        }
-//
-//
-//        @Override
-//        public int getCount() {
-//            if (mMaxComicNumber <= 0) {
-//                return 1;
-//            }
-//            return mMaxComicNumber;
-//        }
-
-        public void updateMaxComicNumber(int mMaxComicNumber) {
-            Log.d("Adapter", "Got New Max Comic Number Updating Adapter " + mMaxComicNumber);
-            this.mMaxComicNumber = mMaxComicNumber;
-            notifyDataSetChanged();
-        }
-
-        @NonNull
         @Override
-        public Fragment createFragment(int position) {
+        public Fragment getItem(int position) {
             // Arrays are 0 based, but the comic is 1 based, so always add 1.
             position++;
 
@@ -146,12 +114,19 @@ public class MainActivity extends FragmentActivity  {
             return screenSlidePageFragment;
         }
 
+
         @Override
-        public int getItemCount() {
+        public int getCount() {
             if (mMaxComicNumber <= 0) {
                 return 1;
             }
             return mMaxComicNumber;
+        }
+
+        public void updateMaxComicNumber(int mMaxComicNumber) {
+            Log.d("Adapter", "Got New Max Comic Number Updating Adapter " + mMaxComicNumber);
+            this.mMaxComicNumber = mMaxComicNumber;
+            notifyDataSetChanged();
         }
     }
 }
