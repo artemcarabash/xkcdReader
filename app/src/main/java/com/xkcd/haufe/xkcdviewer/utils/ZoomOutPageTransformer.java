@@ -1,4 +1,4 @@
-package com.xkcd.haufe.xkcdviewer;
+package com.xkcd.haufe.xkcdviewer.utils;
 
 import android.view.View;
 

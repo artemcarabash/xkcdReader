@@ -1,10 +1,7 @@
-package retrofit;
+package com.xkcd.haufe.xkcdviewer.retrofit;
 
-import java.util.List;
-
-import io.reactivex.Observable;
 import io.reactivex.Single;
-import model.Comic;
+import com.xkcd.haufe.xkcdviewer.model.Comic;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 

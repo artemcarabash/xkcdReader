@@ -1,4 +1,4 @@
-package com.xkcd.haufe.xkcdviewer;
+package com.xkcd.haufe.xkcdviewer.ui.comicsfragment;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -12,10 +12,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.github.chrisbanes.photoview.PhotoView;
-import com.xkcd.haufe.xkcdviewer.databinding.ScreenSlidePageBinding;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
+import com.xkcd.haufe.xkcdviewer.callbacks.ResultFromCallback;
+import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
+import com.xkcd.haufe.xkcdviewer.databinding.ComicLayoutBinding;
+import com.xkcd.haufe.xkcdviewer.model.Comic;
+import com.xkcd.haufe.xkcdviewer.retrofit.IXkcdAPI;
+import com.xkcd.haufe.xkcdviewer.ui.favoritesfragment.FavoriteViewModel;
+import com.xkcd.haufe.xkcdviewer.utils.Common;
+import com.xkcd.haufe.xkcdviewer.utils.InjectorUtils;
+import com.xkcd.haufe.xkcdviewer.utils.PicassoImageLoadingService;
+import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModelFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,33 +40,38 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import model.Comic;
-import retrofit.IXkcdAPI;
-import utils.Common;
-import utils.PicassoImageLoadingService;
 
-
-public class ComicsViewPagerFragment extends Fragment implements TextToSpeech.OnInitListener {
+public class ComicFragment extends Fragment implements TextToSpeech.OnInitListener {
     private String altText, transcript;
-    int comicNumber;
+    int mComicNumber;
     private TextView titleTv, comicNumTv, dateTv;
     private ImageButton playTextBtn;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private IXkcdAPI iXkcdAPI;
     private PhotoView mComicImage;
     private TextToSpeech tts;
-    private ScreenSlidePageBinding binding;
+    private ComicLayoutBinding binding;
+    private FavoriteViewModel viewModel;
+    private FavoriteViewModelFactory viewModelFactory;
+    private boolean isAddedToDb;
+    private LikeButton likeButton;
+    private Comic currentComic;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = ScreenSlidePageBinding.inflate(inflater, container, false);
+
+        binding = ComicLayoutBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        viewModelFactory = InjectorUtils.provideFavComicViewModelFactory(requireContext());
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(FavoriteViewModel.class);
 
         mComicImage = binding.ivComic;
         titleTv = binding.comicTitleTV;
         comicNumTv = binding.comicNumTv;
         playTextBtn = binding.playTextBtn;
+        likeButton = binding.likeButton;
         dateTv = binding.dateTV;
+        playTextBtn.setEnabled(false);
         mComicImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -66,6 +84,18 @@ public class ComicsViewPagerFragment extends Fragment implements TextToSpeech.On
             }
         });
 
+        likeButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                addToFavs();
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                deleteFromFavs();
+            }
+        });
+
         playTextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,10 +105,31 @@ public class ComicsViewPagerFragment extends Fragment implements TextToSpeech.On
 
         tts = new TextToSpeech(requireActivity().getApplicationContext(), this);
         iXkcdAPI = Common.getAPI();
-        fetchComic(comicNumber);
-        Log.d("Comic Number", String.valueOf(comicNumber));
+        fetchComic();
+        Log.d("Comic Number", String.valueOf(mComicNumber));
+        checkComicIsFav();
 
         return view;
+    }
+
+    /*
+    Method for adding a comic to the database
+     */
+    private void addToFavs() {
+        FavoriteComic favComic = new FavoriteComic(currentComic);
+
+        viewModel.insertInDb(favComic);
+        // Show a message to the user
+        Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
+    }
+
+    /*
+    Method for deleting a comic from the database
+     */
+    private void deleteFromFavs() {
+        viewModel.deleteItem(currentComic.getNumber().toString());
+        // Show a message to the user
+        Toast.makeText(requireContext(), "Comic removed from favorites", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -86,14 +137,32 @@ public class ComicsViewPagerFragment extends Fragment implements TextToSpeech.On
         super.onCreate(savedInstanceState);
     }
 
-    private void fetchComic(int comicNumber) {
+    private void checkComicIsFav() {
+        viewModel.isAddedToDb(String.valueOf(mComicNumber), new ResultFromCallback() {
+            @Override
+            public void setResult(boolean isFav) {
+                if (isFav) {
+                    isAddedToDb = true;
+                    likeButton.setLiked(true);
+                    Log.d("ComicFragment", "Item is in the db:" + isAddedToDb);
+                } else {
+                    isAddedToDb = false;
+                    likeButton.setLiked(false);
+                    Log.d("ComicFragment", "Item is NOT in the db");
+                }
+            }
+        });
+    }
 
-        compositeDisposable.add(iXkcdAPI.getComic(comicNumber)
+    private void fetchComic() {
+
+        compositeDisposable.add(iXkcdAPI.getComic(mComicNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Comic>() {
                                @Override
                                public void accept(Comic comic) throws Exception {
+                                   currentComic = comic;
                                    new PicassoImageLoadingService().loadImage(comic.getImageUrl(), mComicImage);
                                    setComicDetails(comic);
                                }
@@ -106,6 +175,7 @@ public class ComicsViewPagerFragment extends Fragment implements TextToSpeech.On
                             }
                         }));
     }
+
 
     private void setComicDetails(Comic comic) {
         Calendar cal = Calendar.getInstance();
@@ -135,8 +205,9 @@ public class ComicsViewPagerFragment extends Fragment implements TextToSpeech.On
                 dialog.dismiss();
                 timer2.cancel(); //this will cancel the timer of the system
             }
-        }, 3000); // the timer will count 5 seconds....
+        }, 3000);
     }
+
 
     @Override
     public void onInit(int status) {

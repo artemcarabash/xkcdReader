@@ -1,4 +1,4 @@
-package utils;
+package com.xkcd.haufe.xkcdviewer.utils;
 
 import android.widget.ImageView;
 

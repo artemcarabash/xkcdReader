@@ -4,5 +4,5 @@
         android:drawable="@drawable/ic_play_gray" />
     <item android:state_pressed="true"
         android:drawable="@drawable/ic_play_gray" />
-    <item android:drawable="@drawable/ic_play" />
+    <item android:state_enabled="true" android:drawable="@drawable/ic_play" />
 </selector>

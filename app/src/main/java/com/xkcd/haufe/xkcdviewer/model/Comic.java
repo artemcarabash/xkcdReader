@@ -1,4 +1,4 @@
-package model;
+package com.xkcd.haufe.xkcdviewer.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

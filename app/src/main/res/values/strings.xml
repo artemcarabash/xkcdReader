@@ -7,4 +7,10 @@
     <string name="footerTv">Swipe left/right. Long press for alt text</string>
     <string name="random">Random</string>
     <string name="current">Current</string>
+    <string name="browse">Browse</string>
+    <string name="favorites">Favorites</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="are_you_sure">You sure you want to delete all favorite comics?</string>
+    <string name="delete_all_title">Delete All</string>
 </resources>

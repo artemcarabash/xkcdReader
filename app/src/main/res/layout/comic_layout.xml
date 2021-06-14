@@ -58,11 +58,12 @@
             android:src="@drawable/play_btn_selector" />
 
         <com.like.LikeButton
+            app:liked="false"
             android:id="@+id/like_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:icon_size="25dp"
+            app:icon_size="30dp"
             app:like_drawable="@drawable/ic_favorite"
             app:unlike_drawable="@drawable/ic_unfavorite" />
 

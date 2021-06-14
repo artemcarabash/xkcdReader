@@ -1,4 +1,4 @@
-package com.xkcd.haufe.xkcdviewer;
+package com.xkcd.haufe.xkcdviewer.ui.comicsfragment;
 
 import android.util.Log;
 
@@ -19,9 +19,9 @@ public class ComicsViewPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         position++;
-        ComicsViewPagerFragment comicsViewPagerFragment = new ComicsViewPagerFragment();
-        comicsViewPagerFragment.comicNumber = position;
-        return comicsViewPagerFragment;
+        ComicFragment comicsFragment = new ComicFragment();
+        comicsFragment.mComicNumber = position;
+        return comicsFragment;
     }
 
     @Override
