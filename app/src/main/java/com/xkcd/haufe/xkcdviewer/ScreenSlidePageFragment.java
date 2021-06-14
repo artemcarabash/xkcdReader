@@ -1,8 +1,6 @@
 package com.xkcd.haufe.xkcdviewer;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -17,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.chrisbanes.photoview.PhotoView;
+import com.xkcd.haufe.xkcdviewer.databinding.ScreenSlidePageBinding;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,15 +42,18 @@ public class ScreenSlidePageFragment extends Fragment implements TextToSpeech.On
     private IXkcdAPI iXkcdAPI;
     private PhotoView mComicImage;
     private TextToSpeech tts;
+    private ScreenSlidePageBinding binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.screen_slide_page, container, false);
-        mComicImage = rootView.findViewById(R.id.iv_comic);
-        titleTv = rootView.findViewById(R.id.comicTitleTV);
-        comicNumTv = rootView.findViewById(R.id.comicNumTv);
-        playTextBtn = rootView.findViewById(R.id.playTextBtn);
-        dateTv = rootView.findViewById(R.id.dateTV);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = ScreenSlidePageBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+
+        mComicImage = binding.ivComic;
+        titleTv = binding.comicTitleTV;
+        comicNumTv = binding.comicNumTv;
+        playTextBtn = binding.playTextBtn;
+        dateTv = binding.dateTV;
         mComicImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -76,7 +78,7 @@ public class ScreenSlidePageFragment extends Fragment implements TextToSpeech.On
         fetchComic(comicNumber);
         Log.d("Comic Number", String.valueOf(comicNumber));
 
-        return rootView;
+        return view;
     }
 
     @Override
@@ -100,7 +102,7 @@ public class ScreenSlidePageFragment extends Fragment implements TextToSpeech.On
 
                             @Override
                             public void accept(Throwable throwable) throws Exception {
-                                Toast.makeText(requireActivity().getApplicationContext(), "Error loading comics1", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(requireActivity().getApplicationContext(), "Error loading comics", Toast.LENGTH_SHORT).show();
                             }
                         }));
     }
@@ -109,7 +111,7 @@ public class ScreenSlidePageFragment extends Fragment implements TextToSpeech.On
         Calendar cal = Calendar.getInstance();
         cal.set(Integer.parseInt(comic.getYear()), Integer.parseInt(comic.getMonth()) - 1,
                 Integer.parseInt(comic.getDay()));
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd yyyy", Locale.US);
         dateFormat.setTimeZone(cal.getTimeZone());
         dateTv.setText(dateFormat.format(cal.getTime()));
 
@@ -117,7 +119,7 @@ public class ScreenSlidePageFragment extends Fragment implements TextToSpeech.On
         altText = comic.getSubTitle();
         comicNumTv.setText(String.valueOf(comic.getNumber()));
         transcript = comic.getTranscript();
-        playTextBtn.setEnabled(!comic.getTranscript().isEmpty());
+        playTextBtn.setEnabled(!transcript.isEmpty());
     }
 
     private void showAltTextDialog() {

@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
+
+import com.xkcd.haufe.xkcdviewer.databinding.ActivityMainBinding;
 
 import java.util.Random;
 
@@ -26,17 +29,20 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 mPager;
     private ScreenSlidePagerAdapter mPagerAdapter;
     private int newestComicNumber = 0;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
         iXkcdAPI = Common.getAPI();
         fetchComic();
 
         mPagerAdapter = new ScreenSlidePagerAdapter(this, newestComicNumber);
-        mPager = findViewById(R.id.pager);
+        mPager = binding.pager;
         mPager.setOffscreenPageLimit(1);
         mPager.setAdapter(mPagerAdapter);
         mPager.setPageTransformer(new ZoomOutPageTransformer());
