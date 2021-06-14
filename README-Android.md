@@ -92,4 +92,4 @@ Bei einigen Comics ist ein Transkript verfügbar (`transcript`). Der Benutzer ka
 
 Das folgende Wireframe soll als Beispiel für eine **mögliche Umsetzung** der Aufgabe dienen. Selbstverständlich darfst du deiner Kreativität freien Lauf lassen und musst dich nicht an dieses Konzept halten.
 
-![](Concept.png)
+![](app/Concept.png)

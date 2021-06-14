@@ -24,7 +24,6 @@ public class FavoriteComicsAdapter extends PagedListAdapter<FavoriteComic, Recyc
 
     private static final String TAG = FavoriteComicsAdapter.class.getSimpleName();
     private List<FavoriteComic> favComicList;
-    private SingleFavItemBinding binding;
 
     public FavoriteComicsAdapter() {
         super(FavoriteComic.DIFF_CALLBACK);
@@ -34,7 +33,7 @@ public class FavoriteComicsAdapter extends PagedListAdapter<FavoriteComic, Recyc
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        binding = SingleFavItemBinding.inflate(layoutInflater, parent, false);
+        com.xkcd.haufe.xkcdviewer.databinding.SingleFavItemBinding binding = SingleFavItemBinding.inflate(layoutInflater, parent, false);
 
         return new FavComicsViewHolder(binding);
     }
