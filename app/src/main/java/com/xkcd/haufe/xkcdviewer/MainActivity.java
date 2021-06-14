@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private IXkcdAPI iXkcdAPI;
     private ViewPager2 mPager;
-    private ScreenSlidePagerAdapter mPagerAdapter;
+    private ComicsViewPagerAdapter mPagerAdapter;
     private int newestComicNumber = 0;
     private ActivityMainBinding binding;
 
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         iXkcdAPI = Common.getAPI();
         fetchComic();
 
-        mPagerAdapter = new ScreenSlidePagerAdapter(this, newestComicNumber);
+        mPagerAdapter = new ComicsViewPagerAdapter(this, newestComicNumber);
         mPager = binding.pager;
         mPager.setOffscreenPageLimit(1);
         mPager.setAdapter(mPagerAdapter);

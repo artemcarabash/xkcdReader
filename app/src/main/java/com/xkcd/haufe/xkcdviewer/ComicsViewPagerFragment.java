@@ -33,7 +33,7 @@ import utils.Common;
 import utils.PicassoImageLoadingService;
 
 
-public class ScreenSlidePageFragment extends Fragment implements TextToSpeech.OnInitListener {
+public class ComicsViewPagerFragment extends Fragment implements TextToSpeech.OnInitListener {
     private String altText, transcript;
     int comicNumber;
     private TextView titleTv, comicNumTv, dateTv;

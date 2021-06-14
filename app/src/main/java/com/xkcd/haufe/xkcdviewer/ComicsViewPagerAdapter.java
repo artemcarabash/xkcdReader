@@ -7,10 +7,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-public class ScreenSlidePagerAdapter extends FragmentStateAdapter {
+public class ComicsViewPagerAdapter extends FragmentStateAdapter {
     protected int mMaxComicNumber;
 
-    public ScreenSlidePagerAdapter(FragmentActivity fragmentActivity, int mMaxComicNumber) {
+    public ComicsViewPagerAdapter(FragmentActivity fragmentActivity, int mMaxComicNumber) {
         super(fragmentActivity);
         this.mMaxComicNumber = mMaxComicNumber;
     }
@@ -19,9 +19,9 @@ public class ScreenSlidePagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         position++;
-        ScreenSlidePageFragment screenSlidePageFragment = new ScreenSlidePageFragment();
-        screenSlidePageFragment.comicNumber = position;
-        return screenSlidePageFragment;
+        ComicsViewPagerFragment comicsViewPagerFragment = new ComicsViewPagerFragment();
+        comicsViewPagerFragment.comicNumber = position;
+        return comicsViewPagerFragment;
     }
 
     @Override
