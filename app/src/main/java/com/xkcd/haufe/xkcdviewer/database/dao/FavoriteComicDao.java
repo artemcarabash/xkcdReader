@@ -6,10 +6,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
-import com.xkcd.haufe.xkcdviewer.model.Comic;
 
 import java.util.List;
-
 
 
 @Dao

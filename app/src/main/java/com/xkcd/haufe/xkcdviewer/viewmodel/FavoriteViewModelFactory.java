@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.xkcd.haufe.xkcdviewer.FavoriteComicRepository;
+import com.xkcd.haufe.xkcdviewer.repository.FavoriteComicRepository;
 import com.xkcd.haufe.xkcdviewer.ui.favoritesfragment.FavoriteViewModel;
 
 public class FavoriteViewModelFactory implements ViewModelProvider.Factory {

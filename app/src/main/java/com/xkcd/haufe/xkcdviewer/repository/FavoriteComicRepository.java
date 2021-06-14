@@ -1,10 +1,11 @@
-package com.xkcd.haufe.xkcdviewer;
+package com.xkcd.haufe.xkcdviewer.repository;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.paging.DataSource;
 
+import com.xkcd.haufe.xkcdviewer.utils.AppExecutors;
 import com.xkcd.haufe.xkcdviewer.callbacks.ResultFromCallback;
 import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
 import com.xkcd.haufe.xkcdviewer.database.dao.FavoriteComicDao;
@@ -40,11 +41,7 @@ public class FavoriteComicRepository {
         return favComicsDao.getAllFavComics();
     }
 
-    /**
-     * Method for inserting a new item in the database
-     *
-     * @param favComic the object being saved in the db
-     */
+   //Method for inserting a new item in the database
     public void insertItem(final FavoriteComic favComic) {
         executors.diskIO().execute(new Runnable() {
             @Override
@@ -54,11 +51,7 @@ public class FavoriteComicRepository {
         });
     }
 
-    /**
-     * Method for deleting an item by its number
-     *
-     * @param comicNumber the number of the comic being deleted
-     */
+   // Method for deleting an item by its number
     public void deleteItem(final String comicNumber) {
         executors.diskIO().execute(new Runnable() {
             @Override

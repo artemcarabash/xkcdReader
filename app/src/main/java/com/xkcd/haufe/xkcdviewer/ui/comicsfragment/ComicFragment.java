@@ -112,20 +112,12 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
         return view;
     }
 
-    /*
-    Method for adding a comic to the database
-     */
     private void addToFavs() {
         FavoriteComic favComic = new FavoriteComic(currentComic);
-
         viewModel.insertInDb(favComic);
-        // Show a message to the user
         Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
     }
 
-    /*
-    Method for deleting a comic from the database
-     */
     private void deleteFromFavs() {
         viewModel.deleteItem(currentComic.getNumber().toString());
         // Show a message to the user

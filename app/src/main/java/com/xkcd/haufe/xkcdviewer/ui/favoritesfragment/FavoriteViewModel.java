@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
-import com.xkcd.haufe.xkcdviewer.FavoriteComicRepository;
+import com.xkcd.haufe.xkcdviewer.repository.FavoriteComicRepository;
 import com.xkcd.haufe.xkcdviewer.callbacks.ResultFromCallback;
 import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
 

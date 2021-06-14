@@ -1,6 +1,5 @@
 package com.xkcd.haufe.xkcdviewer.ui.favoritesfragment;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 import com.xkcd.haufe.xkcdviewer.R;
 import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
-import com.xkcd.haufe.xkcdviewer.model.Comic;
+import com.xkcd.haufe.xkcdviewer.databinding.SingleFavItemBinding;
 
 import java.util.List;
 
@@ -25,6 +24,7 @@ public class FavoriteComicsAdapter extends PagedListAdapter<FavoriteComic, Recyc
 
     private static final String TAG = FavoriteComicsAdapter.class.getSimpleName();
     private List<FavoriteComic> favComicList;
+    private SingleFavItemBinding binding;
 
     public FavoriteComicsAdapter() {
         super(FavoriteComic.DIFF_CALLBACK);
@@ -34,9 +34,9 @@ public class FavoriteComicsAdapter extends PagedListAdapter<FavoriteComic, Recyc
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.single_fav_item, parent, false);
+        binding = SingleFavItemBinding.inflate(layoutInflater, parent, false);
 
-        return new FavComicsViewHolder(view);
+        return new FavComicsViewHolder(binding);
     }
 
     @Override
@@ -71,10 +71,10 @@ public class FavoriteComicsAdapter extends PagedListAdapter<FavoriteComic, Recyc
         ImageView favImage;
         TextView favTitle;
 
-        public FavComicsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            favImage = itemView.findViewById(R.id.fav_image);
-            favTitle = itemView.findViewById(R.id.fav_title);
+        public FavComicsViewHolder(@NonNull SingleFavItemBinding binding) {
+            super(binding.getRoot());
+            favImage = binding.favImage;
+            favTitle = binding.favTitle;
         }
 
         public void bindTo(FavoriteComic favComic) {

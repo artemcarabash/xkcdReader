@@ -2,8 +2,7 @@ package com.xkcd.haufe.xkcdviewer.utils;
 
 import android.content.Context;
 
-import com.xkcd.haufe.xkcdviewer.AppExecutors;
-import com.xkcd.haufe.xkcdviewer.FavoriteComicRepository;
+import com.xkcd.haufe.xkcdviewer.repository.FavoriteComicRepository;
 import com.xkcd.haufe.xkcdviewer.database.ComicsDatabase;
 import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModelFactory;
 
