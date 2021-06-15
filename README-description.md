@@ -1,3 +1,5 @@
+# XKCD Viewer Test Aufgabe.
+
 ## Completed User Stories
 - [x] User Story #1 - Aktuelles Comic anzeigen,
 - [x] User Story #2 - alt-Text für das Comic anzeigen, on long press
@@ -7,8 +9,40 @@
 - [x] User Story #6 - Favoriten verwalten (optional), erstmal alle löschen :) oder Unlike 
 - [x] User Story #7 - Comic vorlesen lassen (optional), TextToSpeech wenn verfügbar ;)
 
+## Libraries
+- AndroidX 
+- Retrofit2
+- PhotoView
+- Picasso
+- Gson
+- RxJava
+- PhotoView
+- Room
+
 ## Screenshots
 
-![foto1](assets/photo_2021-06-15_00-55-40.jpg)
-![foto1](assets/photo_2021-06-15_00-55-42.jpg)
-![foto1](assets/photo_2021-06-15_00-56-02.jpg)
+<table>
+ <tr>
+  <td>
+   <img src="assets/photo_2021-06-15_00-55-40.jpg" width="300"/>
+  </td>
+  <td>
+   <img src="assets/photo_2021-06-15_00-55-42.jpg" width="300"/>
+  </td>
+  <td>
+   <img src="assets/photo_2021-06-15_00-56-02.jpg" width="300"/>
+  </td>
+  </tr>
+ </table>
+
+## TODO's:
+- **Refactor** ComicFragment to use ViewModel
+- Styles
+- Dipendency Injection (evtl. Koin)
+- Landscape/Portrait
+- Favorite Comic in Fullscreen anschauen
+- Show in-progress operations
+- Testing :D (Espresso, JUnit?)
+
+
+#### Author: Artiom Carabas
