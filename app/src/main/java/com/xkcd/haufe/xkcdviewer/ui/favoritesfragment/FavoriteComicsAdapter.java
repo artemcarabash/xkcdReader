@@ -69,19 +69,23 @@ public class FavoriteComicsAdapter extends PagedListAdapter<FavoriteComic, Recyc
 
         ImageView favImage;
         TextView favTitle;
+        TextView favID;
 
         public FavComicsViewHolder(@NonNull SingleFavItemBinding binding) {
             super(binding.getRoot());
             favImage = binding.favImage;
             favTitle = binding.favTitle;
+            favID = binding.favId;
         }
 
         public void bindTo(FavoriteComic favComic) {
             if (favComic != null) {
                 String imageString = favComic.getImg();
                 String titleString = favComic.getTitle();
+                String idString = favComic.getNum();
 
                 favTitle.setText(titleString);
+                favID.setText("#" + idString);
                 Picasso.get()
                         .load(imageString)
                         .error(R.mipmap.ic_launcher)

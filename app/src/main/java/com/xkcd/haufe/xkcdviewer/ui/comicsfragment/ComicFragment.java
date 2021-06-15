@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -56,6 +55,8 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
     private boolean isAddedToDb;
     private LikeButton likeButton;
     private Comic currentComic;
+    private TextView errTextView;
+    private View buttonsArea;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,7 +72,9 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
         playTextBtn = binding.playTextBtn;
         likeButton = binding.likeButton;
         dateTv = binding.dateTV;
+        errTextView = binding.errorTV;
         playTextBtn.setEnabled(false);
+        buttonsArea = binding.buttonsArea;
         mComicImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -157,13 +160,17 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
                                    currentComic = comic;
                                    new PicassoImageLoadingService().loadImage(comic.getImageUrl(), mComicImage);
                                    setComicDetails(comic);
+                                   errTextView.setVisibility(View.GONE);
+                                   buttonsArea.setVisibility(View.VISIBLE);
                                }
                            }
                         , new Consumer<Throwable>() {
 
                             @Override
                             public void accept(Throwable throwable) throws Exception {
-                                Toast.makeText(requireActivity().getApplicationContext(), "Error loading comics", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(requireActivity().getApplicationContext(), "Error loading comic", Toast.LENGTH_SHORT).show();
+                                errTextView.setVisibility(View.VISIBLE);
+                                buttonsArea.setVisibility(View.GONE);
                             }
                         }));
     }

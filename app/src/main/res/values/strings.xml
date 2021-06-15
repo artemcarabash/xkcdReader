@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">XKCDComicViewer</string>
-    <string name="prevButton">Prev</string>
-    <string name="nextButton">Next</string>
+    <string name="app_name">XKCD Comic Viewer</string>
     <string name="comicContentDescription">xkcd Comic Image</string>
     <string name="randomBt">Random</string>
     <string name="footerTv">Swipe left/right. Long press for alt text</string>
@@ -13,4 +11,5 @@
     <string name="cancel">Cancel</string>
     <string name="are_you_sure">You sure you want to delete all favorite comics?</string>
     <string name="delete_all_title">Delete All</string>
+    <string name="err_msg">Oooops! Nothing saved</string>
 </resources>

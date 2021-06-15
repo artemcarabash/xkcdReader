@@ -27,10 +27,11 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_main, new ComicsViewPagerFragment());
-        ft.commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_main, new ComicsViewPagerFragment())
+                    .commit();
+        }
 
         BottomNavigationView navigationView = binding.navigation;
         navigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);

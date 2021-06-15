@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ public class FavoritesFragment extends Fragment {
     private PagedList<FavoriteComic> favComicPagedList;
     private FragmentFavoritesBinding binding;
     private RecyclerView recyclerView;
+    private TextView errorTV;
 
     public FavoritesFragment() {
     }
@@ -51,6 +53,7 @@ public class FavoritesFragment extends Fragment {
         binding = FragmentFavoritesBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         recyclerView = binding.recyclerviewFavs;
+        errorTV = binding.errorMessage;
 
         FavoriteViewModelFactory favFactory = InjectorUtils.provideFavComicViewModelFactory(
                 requireContext().getApplicationContext());
@@ -75,8 +78,9 @@ public class FavoritesFragment extends Fragment {
                 if (favComics != null && favComics.size() > 0) {
                     Log.d(TAG, "Submit comics to the Adapter " + favComics.size());
                     favAdapter.submitList(favComics);
+                    errorTV.setVisibility(View.GONE);
                 } else {
-                    // Show the message for empty list
+                    errorTV.setVisibility(View.VISIBLE);
                 }
 
                 favComicPagedList = favComics;
