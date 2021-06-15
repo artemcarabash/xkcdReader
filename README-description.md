@@ -34,6 +34,9 @@
   </td>
   </tr>
  </table>
+ 
+ ## Demo
+ [short_demo](assets/video_2021-06-15_21-10-52.gif)
 
 ## TODO's:
 - **Refactor** ComicFragment to use ViewModel
