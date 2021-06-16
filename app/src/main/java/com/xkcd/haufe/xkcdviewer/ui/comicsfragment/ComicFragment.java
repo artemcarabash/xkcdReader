@@ -79,17 +79,6 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
         return view;
     }
 
-    private void addToFavorites() {
-        FavoriteComic favComic = new FavoriteComic(currentComic);
-        favoriteViewModel.insertInDb(favComic);
-        Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
-    }
-
-    private void deleteFromFavorites() {
-        favoriteViewModel.deleteItem(currentComic.getNumber().toString());
-        Toast.makeText(requireContext(), "Comic removed from favorites", Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,6 +164,17 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
                 timer.cancel(); //this will cancel the timer of the system
             }
         }, 3000);
+    }
+
+    private void addToFavorites() {
+        FavoriteComic favComic = new FavoriteComic(currentComic);
+        favoriteViewModel.insertInDb(favComic);
+        Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
+    }
+
+    private void deleteFromFavorites() {
+        favoriteViewModel.deleteItem(currentComic.getNumber().toString());
+        Toast.makeText(requireContext(), "Comic removed from favorites", Toast.LENGTH_SHORT).show();
     }
 
 

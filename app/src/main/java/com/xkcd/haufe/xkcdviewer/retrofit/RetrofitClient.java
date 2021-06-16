@@ -14,4 +14,10 @@ public class RetrofitClient {
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).build();
         return instance;
     }
+
+    public static IXkcdAPI getAPI() {
+
+        return RetrofitClient.getInstance().create(IXkcdAPI.class);
+
+    }
 }
