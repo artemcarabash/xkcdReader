@@ -63,13 +63,14 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
         likeButton = binding.likeButton;
         dateTv = binding.dateTV;
         tts = new TextToSpeech(requireActivity().getApplicationContext(), this);
+        playTextBtn.setEnabled(false);
 
         comicViewModel.getComicByNumber(mComicNumber).observe(getViewLifecycleOwner(), new Observer<Comic>() {
             @Override
-            public void onChanged(Comic info) {
-                Log.d("TAG", "LiveData onChanged: " + info);
-                if (info != null) {
-                    setComicDetails(info);
+            public void onChanged(Comic comic) {
+                Log.d("TAG", "LiveData onChanged: " + comic);
+                if (comic != null) {
+                    setComicDetails(comic);
                 }
             }
         });
@@ -99,8 +100,8 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
     private void checkComicIsFavorite() {
         favoriteViewModel.isAddedToDb(String.valueOf(mComicNumber), new ResultFromCallback() {
             @Override
-            public void setResult(boolean isFav) {
-                if (isFav) {
+            public void setResult(boolean isFavorite) {
+                if (isFavorite) {
                     isAddedToDb = true;
                     likeButton.setLiked(true);
                     Log.d("ComicFragment", "Item is in the db:" + isAddedToDb);
@@ -169,11 +170,11 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
         final AlertDialog dialog = builder.create();
         dialog.show();
 
-        final Timer timer2 = new Timer();
-        timer2.schedule(new TimerTask() {
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
             public void run() {
                 dialog.dismiss();
-                timer2.cancel(); //this will cancel the timer of the system
+                timer.cancel(); //this will cancel the timer of the system
             }
         }, 3000);
     }
