@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-
+import androidx.lifecycle.ViewModelProvider;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,17 +24,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xkcd.haufe.xkcdviewer.R;
 import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
 import com.xkcd.haufe.xkcdviewer.databinding.FragmentFavoritesBinding;
-import com.xkcd.haufe.xkcdviewer.utils.InjectorUtils;
+import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModel;
 import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModelFactory;
-import androidx.lifecycle.ViewModelProvider;
 
 
 public class FavoritesFragment extends Fragment {
     private static final String TAG = FavoritesFragment.class.getSimpleName();
 
-    private FavoriteViewModel favViewModel;
-    private FavoriteComicsAdapter favAdapter;
-    private PagedList<FavoriteComic> favComicPagedList;
+    private FavoriteViewModel favoriteViewModel;
+    private FavoriteComicsAdapter favoriteAdapter;
+    private PagedList<FavoriteComic> favoriteComicPagedList;
     private FragmentFavoritesBinding binding;
     private RecyclerView recyclerView;
     private TextView errorTV;
@@ -55,35 +54,33 @@ public class FavoritesFragment extends Fragment {
         recyclerView = binding.recyclerviewFavs;
         errorTV = binding.errorMessage;
 
-        FavoriteViewModelFactory favFactory = InjectorUtils.provideFavComicViewModelFactory(
-                requireContext().getApplicationContext());
-        favViewModel = new ViewModelProvider(this, favFactory).get(FavoriteViewModel.class);
+        favoriteViewModel = new ViewModelProvider(this, new FavoriteViewModelFactory(requireActivity().getApplication())).get(FavoriteViewModel.class);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        favAdapter = new FavoriteComicsAdapter();
+        favoriteAdapter = new FavoriteComicsAdapter();
 
-        getFavComics();
+        getFavoriteComics();
 
-        recyclerView.setAdapter(favAdapter);
+        recyclerView.setAdapter(favoriteAdapter);
 
         return view;
     }
 
-    private void getFavComics() {
-        favViewModel.getFavComics().observe(getViewLifecycleOwner(), new Observer<PagedList<FavoriteComic>>() {
+    private void getFavoriteComics() {
+        favoriteViewModel.getFavComics().observe(getViewLifecycleOwner(), new Observer<PagedList<FavoriteComic>>() {
             @Override
-            public void onChanged(@Nullable PagedList<FavoriteComic> favComics) {
-                if (favComics != null && favComics.size() > 0) {
-                    Log.d(TAG, "Submit comics to the Adapter " + favComics.size());
-                    favAdapter.submitList(favComics);
+            public void onChanged(@Nullable PagedList<FavoriteComic> favoriteComics) {
+                if (favoriteComics != null && favoriteComics.size() > 0) {
+                    Log.d(TAG, "Submit comics to the Adapter " + favoriteComics.size());
+                    favoriteAdapter.submitList(favoriteComics);
                     errorTV.setVisibility(View.GONE);
                 } else {
                     errorTV.setVisibility(View.VISIBLE);
                 }
 
-                favComicPagedList = favComics;
+                favoriteComicPagedList = favoriteComics;
             }
         });
     }
@@ -93,6 +90,7 @@ public class FavoritesFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.favorite_menu, menu);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -109,7 +107,7 @@ public class FavoritesFragment extends Fragment {
 
     private void deleteItemsWithConfirmation() {
 
-        if (favComicPagedList.size() > 0) {
+        if (favoriteComicPagedList.size() > 0) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
             builder.setMessage(R.string.are_you_sure);
@@ -118,7 +116,7 @@ public class FavoritesFragment extends Fragment {
             builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    favViewModel.deleteAllComics();
+                    favoriteViewModel.deleteAllComics();
                     refreshFavList();
                 }
             });
@@ -139,13 +137,13 @@ public class FavoritesFragment extends Fragment {
 
     private void refreshFavList() {
 
-        favViewModel.refreshFavComics(requireActivity().getApplication())
+        favoriteViewModel.refreshFavComics(requireActivity().getApplication())
                 .observe(this, new Observer<PagedList<FavoriteComic>>() {
                     @Override
                     public void onChanged(@Nullable PagedList<FavoriteComic> favComics) {
                         if (favComics != null) {
-                            favAdapter.submitList(favComics);
-                            favComicPagedList = favComics;
+                            favoriteAdapter.submitList(favComics);
+                            favoriteComicPagedList = favComics;
                         }
                     }
                 });

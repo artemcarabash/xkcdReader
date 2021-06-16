@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.xkcd.haufe.xkcdviewer.R;
 import com.xkcd.haufe.xkcdviewer.databinding.ActivityMainBinding;
-import com.xkcd.haufe.xkcdviewer.ui.comicsfragment.ComicsViewPagerFragment;
+import com.xkcd.haufe.xkcdviewer.ui.comicsfragment.ViewPagerFragment;
 import com.xkcd.haufe.xkcdviewer.ui.favoritesfragment.FavoritesFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(view);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_main, new ComicsViewPagerFragment())
+                    .replace(R.id.content_main, new ViewPagerFragment())
                     .commit();
         }
 
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = null;
         if (id == R.id.browse) {
             currentTabId = id;
-            fragment = new ComicsViewPagerFragment();
+            fragment = new ViewPagerFragment();
         } else if (id == R.id.favorites) {
             currentTabId = id;
             fragment = new FavoritesFragment();

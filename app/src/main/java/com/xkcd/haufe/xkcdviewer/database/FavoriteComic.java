@@ -82,6 +82,7 @@ public class FavoriteComic {
         this.title = comic.getTitle();
     }
 
+
     public int getId() {
         return id;
     }

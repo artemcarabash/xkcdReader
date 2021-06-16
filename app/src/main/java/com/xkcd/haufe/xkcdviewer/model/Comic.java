@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
 
 public class Comic implements Parcelable {
     @SerializedName("num")
@@ -128,4 +129,5 @@ public class Comic implements Parcelable {
 
         ;
     };
+
 }

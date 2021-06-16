@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.chrisbanes.photoview.PhotoView;
@@ -22,11 +23,10 @@ import com.xkcd.haufe.xkcdviewer.callbacks.ResultFromCallback;
 import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
 import com.xkcd.haufe.xkcdviewer.databinding.ComicLayoutBinding;
 import com.xkcd.haufe.xkcdviewer.model.Comic;
-import com.xkcd.haufe.xkcdviewer.retrofit.IXkcdAPI;
-import com.xkcd.haufe.xkcdviewer.ui.favoritesfragment.FavoriteViewModel;
-import com.xkcd.haufe.xkcdviewer.utils.Common;
-import com.xkcd.haufe.xkcdviewer.utils.InjectorUtils;
+import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModel;
 import com.xkcd.haufe.xkcdviewer.utils.PicassoImageLoadingService;
+import com.xkcd.haufe.xkcdviewer.viewmodel.ComicViewModel;
+import com.xkcd.haufe.xkcdviewer.viewmodel.ComicViewModelFactory;
 import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModelFactory;
 
 import java.text.SimpleDateFormat;
@@ -35,95 +35,59 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-
 public class ComicFragment extends Fragment implements TextToSpeech.OnInitListener {
     private String altText, transcript;
     int mComicNumber;
     private TextView titleTv, comicNumTv, dateTv;
     private ImageButton playTextBtn;
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private IXkcdAPI iXkcdAPI;
     private PhotoView mComicImage;
     private TextToSpeech tts;
     private ComicLayoutBinding binding;
-    private FavoriteViewModel viewModel;
-    private FavoriteViewModelFactory viewModelFactory;
+    private FavoriteViewModel favoriteViewModel;
+    private ComicViewModel comicViewModel;
     private boolean isAddedToDb;
     private LikeButton likeButton;
     private Comic currentComic;
-    private TextView errTextView;
-    private View buttonsArea;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = ComicLayoutBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        viewModelFactory = InjectorUtils.provideFavComicViewModelFactory(requireContext());
-        viewModel = new ViewModelProvider(this, viewModelFactory).get(FavoriteViewModel.class);
-
+        favoriteViewModel = new ViewModelProvider(this, new FavoriteViewModelFactory(requireActivity().getApplication())).get(FavoriteViewModel.class);
+        comicViewModel = new ViewModelProvider(this, new ComicViewModelFactory(requireActivity().getApplication())).get(ComicViewModel.class);
         mComicImage = binding.ivComic;
         titleTv = binding.comicTitleTV;
         comicNumTv = binding.comicNumTv;
         playTextBtn = binding.playTextBtn;
         likeButton = binding.likeButton;
         dateTv = binding.dateTV;
-        errTextView = binding.errorTV;
-        playTextBtn.setEnabled(false);
-        buttonsArea = binding.buttonsArea;
-        mComicImage.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                try {
-                    showAltTextDialog();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return false;
-            }
-        });
-
-        likeButton.setOnLikeListener(new OnLikeListener() {
-            @Override
-            public void liked(LikeButton likeButton) {
-                addToFavs();
-            }
-
-            @Override
-            public void unLiked(LikeButton likeButton) {
-                deleteFromFavs();
-            }
-        });
-
-        playTextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                speakOut();
-            }
-        });
-
         tts = new TextToSpeech(requireActivity().getApplicationContext(), this);
-        iXkcdAPI = Common.getAPI();
-        fetchComic();
+
+        comicViewModel.getComicByNumber(mComicNumber).observe(getViewLifecycleOwner(), new Observer<Comic>() {
+            @Override
+            public void onChanged(Comic info) {
+                Log.d("TAG", "LiveData onChanged: " + info);
+                if (info != null) {
+                    setComicDetails(info);
+                }
+            }
+        });
+
         Log.d("Comic Number", String.valueOf(mComicNumber));
-        checkComicIsFav();
+        checkComicIsFavorite();
 
         return view;
     }
 
-    private void addToFavs() {
+    private void addToFavorites() {
         FavoriteComic favComic = new FavoriteComic(currentComic);
-        viewModel.insertInDb(favComic);
+        favoriteViewModel.insertInDb(favComic);
         Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
     }
 
-    private void deleteFromFavs() {
-        viewModel.deleteItem(currentComic.getNumber().toString());
-        // Show a message to the user
+    private void deleteFromFavorites() {
+        favoriteViewModel.deleteItem(currentComic.getNumber().toString());
         Toast.makeText(requireContext(), "Comic removed from favorites", Toast.LENGTH_SHORT).show();
     }
 
@@ -132,8 +96,8 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
         super.onCreate(savedInstanceState);
     }
 
-    private void checkComicIsFav() {
-        viewModel.isAddedToDb(String.valueOf(mComicNumber), new ResultFromCallback() {
+    private void checkComicIsFavorite() {
+        favoriteViewModel.isAddedToDb(String.valueOf(mComicNumber), new ResultFromCallback() {
             @Override
             public void setResult(boolean isFav) {
                 if (isFav) {
@@ -149,46 +113,53 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
         });
     }
 
-    private void fetchComic() {
-
-        compositeDisposable.add(iXkcdAPI.getComic(mComicNumber)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Comic>() {
-                               @Override
-                               public void accept(Comic comic) throws Exception {
-                                   currentComic = comic;
-                                   new PicassoImageLoadingService().loadImage(comic.getImageUrl(), mComicImage);
-                                   setComicDetails(comic);
-                                   errTextView.setVisibility(View.GONE);
-                                   buttonsArea.setVisibility(View.VISIBLE);
-                               }
-                           }
-                        , new Consumer<Throwable>() {
-
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                Toast.makeText(requireActivity().getApplicationContext(), "Error loading comic", Toast.LENGTH_SHORT).show();
-                                errTextView.setVisibility(View.VISIBLE);
-                                buttonsArea.setVisibility(View.GONE);
-                            }
-                        }));
-    }
-
 
     private void setComicDetails(Comic comic) {
+        currentComic = comic;
         Calendar cal = Calendar.getInstance();
         cal.set(Integer.parseInt(comic.getYear()), Integer.parseInt(comic.getMonth()) - 1,
                 Integer.parseInt(comic.getDay()));
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd yyyy", Locale.US);
         dateFormat.setTimeZone(cal.getTimeZone());
         dateTv.setText(dateFormat.format(cal.getTime()));
+        new PicassoImageLoadingService().loadImage(comic.getImageUrl(), mComicImage);
 
         titleTv.setText(comic.getTitle());
         altText = comic.getSubTitle();
         comicNumTv.setText(String.valueOf(comic.getNumber()));
         transcript = comic.getTranscript();
         playTextBtn.setEnabled(!transcript.isEmpty());
+
+        mComicImage.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                try {
+                    showAltTextDialog();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
+
+        likeButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                addToFavorites();
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                deleteFromFavorites();
+            }
+        });
+
+        playTextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speakOut();
+            }
+        });
     }
 
     private void showAltTextDialog() {

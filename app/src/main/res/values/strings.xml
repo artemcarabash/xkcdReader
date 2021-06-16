@@ -12,4 +12,5 @@
     <string name="are_you_sure">You sure you want to delete all favorite comics?</string>
     <string name="delete_all_title">Delete All</string>
     <string name="err_msg">Oooops! Nothing saved</string>
+    <string name="no_internet_error">Error. Check Internet connection</string>
 </resources>

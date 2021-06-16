@@ -1,5 +1,6 @@
 package com.xkcd.haufe.xkcdviewer.database.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -14,9 +15,6 @@ import java.util.List;
 public interface FavoriteComicDao {
     @Insert
     void insertComic(FavoriteComic favComic);
-
-    @Query("SELECT * FROM favorite_comics")
-    List<FavoriteComic> allComics();
 
     @Query("SELECT * FROM favorite_comics")
     DataSource.Factory<Integer, FavoriteComic> getAllFavComics();
