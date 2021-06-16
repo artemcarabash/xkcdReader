@@ -21,7 +21,6 @@ import com.xkcd.haufe.xkcdviewer.R;
 import com.xkcd.haufe.xkcdviewer.databinding.ComicsFragmentBinding;
 import com.xkcd.haufe.xkcdviewer.utils.ZoomOutPageTransformer;
 import com.xkcd.haufe.xkcdviewer.viewmodel.ComicViewModel;
-import com.xkcd.haufe.xkcdviewer.viewmodel.ComicViewModelFactory;
 
 import java.util.Random;
 
@@ -48,7 +47,7 @@ public class ViewPagerFragment extends Fragment {
 
         Log.d("Comic Number", String.valueOf(comicNumber));
 
-        mModel = new ViewModelProvider(this, new ComicViewModelFactory(requireActivity().getApplication())).get(ComicViewModel.class);
+        mModel = new ViewModelProvider(this).get(ComicViewModel.class);
 
         mObserver = new Observer<Integer>() {
             @Override

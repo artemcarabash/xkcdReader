@@ -23,11 +23,9 @@ import com.xkcd.haufe.xkcdviewer.callbacks.ResultFromCallback;
 import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
 import com.xkcd.haufe.xkcdviewer.databinding.ComicLayoutBinding;
 import com.xkcd.haufe.xkcdviewer.model.Comic;
-import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModel;
 import com.xkcd.haufe.xkcdviewer.utils.PicassoImageLoadingService;
 import com.xkcd.haufe.xkcdviewer.viewmodel.ComicViewModel;
-import com.xkcd.haufe.xkcdviewer.viewmodel.ComicViewModelFactory;
-import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModelFactory;
+import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -46,7 +44,7 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
     private FavoriteViewModel favoriteViewModel;
     private ComicViewModel comicViewModel;
     private boolean isAddedToDb;
-    private LikeButton likeButton;
+    private LikeButton likeBtn;
     private Comic currentComic;
 
     @Override
@@ -54,13 +52,13 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
 
         binding = ComicLayoutBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        favoriteViewModel = new ViewModelProvider(this, new FavoriteViewModelFactory(requireActivity().getApplication())).get(FavoriteViewModel.class);
-        comicViewModel = new ViewModelProvider(this, new ComicViewModelFactory(requireActivity().getApplication())).get(ComicViewModel.class);
+        favoriteViewModel = new ViewModelProvider(this).get(FavoriteViewModel.class);
+        comicViewModel = new ViewModelProvider(this).get(ComicViewModel.class);
         mComicImage = binding.ivComic;
         titleTv = binding.comicTitleTV;
         comicNumTv = binding.comicNumTv;
         playTextBtn = binding.playTextBtn;
-        likeButton = binding.likeButton;
+        likeBtn = binding.likeButton;
         dateTv = binding.dateTV;
         tts = new TextToSpeech(requireActivity().getApplicationContext(), this);
         playTextBtn.setEnabled(false);
@@ -103,11 +101,11 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
             public void setResult(boolean isFavorite) {
                 if (isFavorite) {
                     isAddedToDb = true;
-                    likeButton.setLiked(true);
+                    likeBtn.setLiked(true);
                     Log.d("ComicFragment", "Item is in the db:" + isAddedToDb);
                 } else {
                     isAddedToDb = false;
-                    likeButton.setLiked(false);
+                    likeBtn.setLiked(false);
                     Log.d("ComicFragment", "Item is NOT in the db");
                 }
             }
@@ -143,7 +141,7 @@ public class ComicFragment extends Fragment implements TextToSpeech.OnInitListen
             }
         });
 
-        likeButton.setOnLikeListener(new OnLikeListener() {
+        likeBtn.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
                 addToFavorites();

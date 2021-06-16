@@ -25,7 +25,6 @@ import com.xkcd.haufe.xkcdviewer.R;
 import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
 import com.xkcd.haufe.xkcdviewer.databinding.FragmentFavoritesBinding;
 import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModel;
-import com.xkcd.haufe.xkcdviewer.viewmodel.FavoriteViewModelFactory;
 
 
 public class FavoritesFragment extends Fragment {
@@ -54,7 +53,7 @@ public class FavoritesFragment extends Fragment {
         recyclerView = binding.recyclerviewFavs;
         errorTV = binding.errorMessage;
 
-        favoriteViewModel = new ViewModelProvider(this, new FavoriteViewModelFactory(requireActivity().getApplication())).get(FavoriteViewModel.class);
+        favoriteViewModel = new ViewModelProvider(this).get(FavoriteViewModel.class);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);

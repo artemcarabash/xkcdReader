@@ -14,8 +14,8 @@ import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
 import com.xkcd.haufe.xkcdviewer.database.dao.FavoriteComicDao;
 import com.xkcd.haufe.xkcdviewer.model.Comic;
 import com.xkcd.haufe.xkcdviewer.retrofit.IXkcdAPI;
+import com.xkcd.haufe.xkcdviewer.retrofit.RetrofitClient;
 import com.xkcd.haufe.xkcdviewer.utils.AppExecutors;
-import com.xkcd.haufe.xkcdviewer.utils.Common;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -35,7 +35,7 @@ public class FavoriteComicRepository {
         ComicsDatabase db = ComicsDatabase.getInstance(context);
         this.favComicsDao = db.favComicsDao();
         this.executors = executors;
-        xkcdAPI = Common.getAPI();
+        xkcdAPI = RetrofitClient.getAPI();
     }
 
     public static FavoriteComicRepository getInstance(Context context,
