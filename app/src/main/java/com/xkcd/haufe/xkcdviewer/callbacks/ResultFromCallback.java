@@ -1,5 +1,5 @@
 package com.xkcd.haufe.xkcdviewer.callbacks;
 
 public interface ResultFromCallback {
-    void setResult(boolean isFav);
+    void setResult(boolean isFavorite);
 }

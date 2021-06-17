@@ -7,16 +7,16 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.xkcd.haufe.xkcdviewer.model.Comic;
-import com.xkcd.haufe.xkcdviewer.repository.FavoriteComicRepository;
+import com.xkcd.haufe.xkcdviewer.repository.ComicRepository;
 import com.xkcd.haufe.xkcdviewer.utils.AppExecutors;
 
 public class ComicViewModel extends AndroidViewModel {
     AppExecutors executors = AppExecutors.getInstance();
-    private FavoriteComicRepository repository;
+    private ComicRepository repository;
 
     public ComicViewModel(@NonNull Application application) {
         super(application);
-        repository = FavoriteComicRepository.getInstance(application, executors);
+        repository = ComicRepository.getInstance(application, executors);
     }
 
     public LiveData<Integer> getBrowseData() {

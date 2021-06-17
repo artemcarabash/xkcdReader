@@ -10,17 +10,17 @@ import androidx.paging.PagedList;
 
 import com.xkcd.haufe.xkcdviewer.callbacks.ResultFromCallback;
 import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
-import com.xkcd.haufe.xkcdviewer.repository.FavoriteComicRepository;
+import com.xkcd.haufe.xkcdviewer.repository.ComicRepository;
 import com.xkcd.haufe.xkcdviewer.utils.AppExecutors;
 
 public class FavoriteViewModel extends AndroidViewModel {
-    private FavoriteComicRepository repository;
+    private ComicRepository repository;
     private LiveData<PagedList<FavoriteComic>> favComicsList;
     AppExecutors executors = AppExecutors.getInstance();
 
     public FavoriteViewModel(@NonNull Application application) {
         super(application);
-        this.repository = FavoriteComicRepository.getInstance(application, executors);
+        this.repository = ComicRepository.getInstance(application, executors);
         init();
     }
 
@@ -44,7 +44,7 @@ public class FavoriteViewModel extends AndroidViewModel {
         repository.deleteAllItems();
     }
 
-    public LiveData<PagedList<FavoriteComic>> refreshFavComics(Application application) {
+    public LiveData<PagedList<FavoriteComic>> refreshFavComics() {
         PagedList.Config pagedListConfig = new PagedList.Config.Builder()
                 .setEnablePlaceholders(true)
                 .setPrefetchDistance(10)

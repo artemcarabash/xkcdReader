@@ -37,9 +37,12 @@
  
  ## Demo
  [short_demo](assets/video_2021-06-15_21-10-52.gif)
+ 
+  ## App Architecture
+  <img src="assets/XKCDViewer.jpg"/>
 
 ## TODO's:
-- **Refactor** ComicFragment to use ViewModel
+- <del>**Refactor** ComicFragment to use ViewModel</del>
 - Styles
 - Dipendency Injection (evtl. Koin)
 - Landscape/Portrait

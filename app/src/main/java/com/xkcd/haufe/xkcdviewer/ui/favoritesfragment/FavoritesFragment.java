@@ -116,7 +116,7 @@ public class FavoritesFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     favoriteViewModel.deleteAllComics();
-                    refreshFavList();
+                    refreshFavoritesList();
                 }
             });
 
@@ -134,9 +134,9 @@ public class FavoritesFragment extends Fragment {
         }
     }
 
-    private void refreshFavList() {
+    private void refreshFavoritesList() {
 
-        favoriteViewModel.refreshFavComics(requireActivity().getApplication())
+        favoriteViewModel.refreshFavComics()
                 .observe(this, new Observer<PagedList<FavoriteComic>>() {
                     @Override
                     public void onChanged(@Nullable PagedList<FavoriteComic> favComics) {

@@ -22,29 +22,29 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class FavoriteComicRepository {
-    private static final String TAG = FavoriteComicRepository.class.getSimpleName();
-    private static volatile FavoriteComicRepository INSTANCE;
+public class ComicRepository {
+    private static final String TAG = ComicRepository.class.getSimpleName();
+    private static volatile ComicRepository INSTANCE;
 
     private final FavoriteComicDao favComicsDao;
     private final AppExecutors executors;
     private IXkcdAPI xkcdAPI;
 
 
-    private FavoriteComicRepository(Context context, AppExecutors executors) {
+    private ComicRepository(Context context, AppExecutors executors) {
         ComicsDatabase db = ComicsDatabase.getInstance(context);
         this.favComicsDao = db.favComicsDao();
         this.executors = executors;
         xkcdAPI = RetrofitClient.getAPI();
     }
 
-    public static FavoriteComicRepository getInstance(Context context,
-                                                      AppExecutors executors) {
+    public static ComicRepository getInstance(Context context,
+                                              AppExecutors executors) {
         if (INSTANCE == null) {
             // If there is no instance available, create a new one
-            synchronized (FavoriteComicRepository.class) {
+            synchronized (ComicRepository.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new FavoriteComicRepository(context, executors);
+                    INSTANCE = new ComicRepository(context, executors);
                 }
             }
         }
@@ -88,7 +88,7 @@ public class FavoriteComicRepository {
         });
     }
 
-    public LiveData<Comic> getLiveDataLoader(int num) {
+    public LiveData<Comic> getLiveDataLoader(final int num) {
         Log.d(TAG, "getLiveDataLoader: " + num);
         final MutableLiveData<Comic> data = new MutableLiveData<>();
         new CompositeDisposable().add(xkcdAPI.getComic(num)
@@ -104,7 +104,7 @@ public class FavoriteComicRepository {
 
                             @Override
                             public void accept(Throwable throwable) throws Exception {
-
+                                data.postValue(null);
                             }
                         }));
         return data;
