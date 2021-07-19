@@ -51,6 +51,8 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:1.1.1"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+    implementation "androidx.room:room-rxjava2:2.3.0"
+
     // Paging library
     implementation "android.arch.paging:runtime:1.0.1"
 

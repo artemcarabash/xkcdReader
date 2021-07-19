@@ -10,6 +10,8 @@ import com.xkcd.haufe.xkcdviewer.database.FavoriteComic;
 
 import java.util.List;
 
+import io.reactivex.Single;
+
 
 @Dao
 public interface FavoriteComicDao {
@@ -21,6 +23,9 @@ public interface FavoriteComicDao {
 
     @Query("SELECT number FROM favorite_comics WHERE number = :comicNum")
     String getComicByNum(String comicNum);
+
+    @Query("SELECT EXISTS(SELECT * FROM favorite_comics WHERE number = :comicNum)")
+    Single<Boolean> isComicInDB(String comicNum);
 
     @Query("DELETE FROM favorite_comics WHERE number = :comicNumber")
     void deleteComic(String comicNumber);

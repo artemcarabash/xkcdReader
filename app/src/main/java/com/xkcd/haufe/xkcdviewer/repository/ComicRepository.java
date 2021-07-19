@@ -19,7 +19,9 @@ import com.xkcd.haufe.xkcdviewer.utils.AppExecutors;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class ComicRepository {
@@ -113,8 +115,25 @@ public class ComicRepository {
     /*
     Get an item by Id from the database
      */
-    public void addOrRemoveFromDb(String comicNum, ResultFromCallback callback) {
-        new getItemByNum(comicNum, favComicsDao, callback).execute();
+    public void addOrRemoveFromDb(String comicNum, final ResultFromCallback callback) {
+//        new getItemByNum(comicNum, favComicsDao, callback).execute();
+
+        new CompositeDisposable().add(favComicsDao.isComicInDB(comicNum)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Boolean>() {
+                               @Override
+                               public void accept(Boolean exists) throws Exception {
+                                   callback.setResult(exists);
+                               }
+                           }
+                        , new Consumer<Throwable>() {
+
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                callback.setResult(false);
+                            }
+                        }));
     }
 
     public LiveData<Integer> getBrowseData() {
@@ -128,8 +147,8 @@ public class ComicRepository {
                 .subscribe(new Consumer<Comic>() {
                                @Override
                                public void accept(Comic comic) throws Exception {
-                                   Integer list = comic.getNumber();
-                                   data.postValue(list);
+                                   Integer number = comic.getNumber();
+                                   data.postValue(number);
                                }
                            }
                         , new Consumer<Throwable>() {
@@ -143,34 +162,34 @@ public class ComicRepository {
         return data;
     }
 
-    /*
-    Query the item on a background thread via AsyncTask
-     */
-    private static class getItemByNum extends AsyncTask<Void, Void, Boolean> {
-
-        private String comicNum;
-        private FavoriteComicDao favComicsDao;
-        private ResultFromCallback callback;
-
-        public getItemByNum(String comicNum, FavoriteComicDao favComicsDao,
-                            ResultFromCallback resultFromCallback) {
-            this.comicNum = comicNum;
-            this.favComicsDao = favComicsDao;
-            this.callback = resultFromCallback;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            boolean isFav = comicNum.equals(favComicsDao.getComicByNum(comicNum));
-            Log.d(TAG, "doInBackground: Item is in the db: " + isFav);
-
-            return isFav;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean isFav) {
-            callback.setResult(isFav);
-        }
-    }
+//    /*
+//    Query the item on a background thread via AsyncTask
+//     */
+//    private static class getItemByNum extends AsyncTask<Void, Void, Boolean> {
+//
+//        private String comicNum;
+//        private FavoriteComicDao favComicsDao;
+//        private ResultFromCallback callback;
+//
+//        public getItemByNum(String comicNum, FavoriteComicDao favComicsDao,
+//                            ResultFromCallback resultFromCallback) {
+//            this.comicNum = comicNum;
+//            this.favComicsDao = favComicsDao;
+//            this.callback = resultFromCallback;
+//        }
+//
+//        @Override
+//        protected Boolean doInBackground(Void... voids) {
+//            boolean isFav = comicNum.equals(favComicsDao.getComicByNum(comicNum));
+//            Log.d(TAG, "doInBackground: Item is in the db: " + isFav);
+//
+//            return isFav;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean isFav) {
+//            callback.setResult(isFav);
+//        }
+//    }
 
 }
