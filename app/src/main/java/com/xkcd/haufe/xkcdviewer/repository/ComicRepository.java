@@ -116,7 +116,6 @@ public class ComicRepository {
     Get an item by Id from the database
      */
     public void addOrRemoveFromDb(String comicNum, final ResultFromCallback callback) {
-//        new getItemByNum(comicNum, favComicsDao, callback).execute();
 
         new CompositeDisposable().add(favComicsDao.isComicInDB(comicNum)
                 .subscribeOn(Schedulers.io())
@@ -161,35 +160,5 @@ public class ComicRepository {
 
         return data;
     }
-
-//    /*
-//    Query the item on a background thread via AsyncTask
-//     */
-//    private static class getItemByNum extends AsyncTask<Void, Void, Boolean> {
-//
-//        private String comicNum;
-//        private FavoriteComicDao favComicsDao;
-//        private ResultFromCallback callback;
-//
-//        public getItemByNum(String comicNum, FavoriteComicDao favComicsDao,
-//                            ResultFromCallback resultFromCallback) {
-//            this.comicNum = comicNum;
-//            this.favComicsDao = favComicsDao;
-//            this.callback = resultFromCallback;
-//        }
-//
-//        @Override
-//        protected Boolean doInBackground(Void... voids) {
-//            boolean isFav = comicNum.equals(favComicsDao.getComicByNum(comicNum));
-//            Log.d(TAG, "doInBackground: Item is in the db: " + isFav);
-//
-//            return isFav;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Boolean isFav) {
-//            callback.setResult(isFav);
-//        }
-//    }
 
 }
